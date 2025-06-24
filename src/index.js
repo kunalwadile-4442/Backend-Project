@@ -1,26 +1,19 @@
-import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './db/connectDB.js';
+import app from './app.js';
 
 dotenv.config();
 
 // Connect to MongoDB
-connectDB();
-
-// Create express app
-const app = express();
-
-// Basic middleware
-app.use(express.json());
-
-// Basic route
-app.get('/', (req, res) => {
-  res.send('API is running...');
-});
-
-// Start server
-const PORT = process.env.PORT;
-
+connectDB()
+.then(()=>{
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+})
+.catch((err)=>{
+    console.log("MongoDB connection failed on index.js",err);
+    process.exit(1);
+})
+
