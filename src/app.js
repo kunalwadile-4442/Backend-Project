@@ -23,4 +23,11 @@ app.use(express.urlencoded({ extended: true, limit: process.env.LIMIT_JSON }));
 // Static files (before routes)
 app.use(express.static("public"));
 
+// routes
+import userRouter from "./routes/user.routes.js"
+
+// routes delecration 
+app.use("/api/v1/users", userRouter);
+
+
 export default app;
