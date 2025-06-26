@@ -30,12 +30,12 @@ const userSchame = new Schema(
       type: String, // cloudanary url used to store image
       required: true,
     },
-    coverimage: {
+    coverImage: {
       type: String, // cloudanary url used to store image
     },
     watchHistory: [
       {
-        type: Schame.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Video",
       },
     ],
