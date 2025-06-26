@@ -1,6 +1,8 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { MESSAGES } from "../constants.js";
+
 
 const userSchame = new Schema(
   {
@@ -39,15 +41,15 @@ const userSchame = new Schema(
         ref: "Video",
       },
     ],
-    password: {
-      type: String,
-      required: [true, "Password is required"],
-      minlenght: [6, "Password must be at least 6 characters long"],
-      maxlenght: [20, "Password must be at most 20 characters long"],
-    },
+   
+      password: {
+        type: String,
+        required: [true, MESSAGES.PASSWORD_REQUIRED],
+        minlength: [6, MESSAGES.PASSWORD_MIN],
+        maxlength: [20, MESSAGES.PASSWORD_MAX],
+      },
     refreshToken: {
       type: String,
-      required: true,
     },
   },
   { timestamps: true }
@@ -56,7 +58,7 @@ const userSchame = new Schema(
 userSchame.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   // if password has not been modified, then do not hash it
-  this.password = await bcrypt.hash(this.password, Process.env.SALT_ROUNDS );
+  this.password = await bcrypt.hash(this.password, parseInt(process.env.SALT_ROUNDS));
   next();
 });
 
