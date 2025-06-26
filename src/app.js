@@ -23,6 +23,12 @@ app.use(express.urlencoded({ extended: true, limit: process.env.LIMIT_JSON }));
 // Static files (before routes)
 app.use(express.static("public"));
 
+// Serve API tester page
+app.get("/api-tester", (req, res) => {
+  res.sendFile(path.join(process.cwd(), "public", "api-test.html"))
+})
+
+
 // routes
 import userRouter from "./routes/user.routes.js"
 

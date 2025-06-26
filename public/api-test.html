@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Node.js API Tester - Enhanced for Your Project</title>
+        <meta name="robots" content="noindex,nofollow,noarchive" />
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            color: #666;
+        }
+
+        .config-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            margin-bottom: 25px;
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 20px;
+            align-items: end;
+        }
+
+        .config-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .config-group label {
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+        }
+
+        .expand-collapse {
+            margin-bottom: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .expand-collapse h3 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 25px;
+            margin: 0;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .expand-collapse h3:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+
+        .expand-collapse h3::after {
+            content: '▼';
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .expand-collapse h3.active::after {
+            transform: rotate(180deg);
+        }
+
+        .accordion-body {
+            background: white;
+        }
+
+        .tab-menu {
+            background: #f8f9fa;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .tab-menu ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+            flex-wrap: wrap;
+        }
+
+        .tab-menu ul li {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .tab-menu ul li a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #666;
+            font-weight: 500;
+            text-align: center;
+            border-right: 1px solid #e1e5e9;
+            transition: all 0.3s ease;
+            font-size: 13px;
+        }
+
+        .tab-menu ul li:last-child a {
+            border-right: none;
+        }
+
+        .tab-menu ul li a:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .tab-menu ul li a.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-box {
+            display: none;
+            padding: 25px;
+        }
+
+        .tab-box.active {
+            display: block;
+        }
+
+        .endpoint-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+
+        .method-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 12px;
+            text-transform: uppercase;
+        }
+
+        .method-get { background: #4caf50; color: white; }
+        .method-post { background: #2196f3; color: white; }
+        .method-put { background: #ff9800; color: white; }
+        .method-delete { background: #f44336; color: white; }
+
+        .json-editor {
+            background: #2d3748;
+            color: #e2e8f0;
+            border: none;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            width: 100%;
+            min-height: 150px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9ff;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .file-upload-area:hover {
+            border-color: #5a6fd8;
+            background: #f0f2ff;
+        }
+
+        .file-upload-area.dragover {
+            border-color: #4caf50;
+            background: #f0fff4;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            cursor: pointer;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .file-preview {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .file-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+        }
+
+        .file-item img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .file-remove {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .response-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e1e5e9;
+            display: none;
+        }
+
+        .response-section.show {
+            display: block;
+        }
+
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .response-status {
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .response-time {
+            font-size: 12px;
+            color: #666;
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .response-output {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+
+        .server-info {
+            background: rgba(255, 243, 205, 0.9);
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .server-info strong {
+            color: #856404;
+        }
+
+        .clear-response {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clear-response:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+            position: relative;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid #fff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .quick-actions .btn {
+            font-size: 12px;
+            padding: 8px 16px;
+        }
+
+        @media (max-width: 768px) {
+            .config-section {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .tab-menu ul {
+                flex-direction: column;
+            }
+            
+            .tab-menu ul li {
+                flex: none;
+            }
+            
+            .tab-menu ul li a {
+                border-right: none;
+                border-bottom: 1px solid #e1e5e9;
+            }
+
+            .quick-actions {
+                justify-content: center;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
+        }
+    </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🚀 Node.js API Tester</h1>
+                <p>Enhanced for Your Project - Test with File Uploads & JWT
+                    Authentication</p>
+            </div>
+
+            <!-- Configuration Section -->
+            <div class="config-section">
+                <div class="config-group">
+                    <label for="serverUrl">🌐 Server URL:</label>
+                    <input type="text" id="serverUrl" class="form-control"
+                        value="http://localhost:8000"
+                        placeholder="http://localhost:8000">
+                </div>
+                <div class="config-group">
+                    <label for="authToken">🔐 JWT Token:</label>
+                    <input type="text" id="authToken" required
+                        class="form-control"
+                        placeholder="Paste your JWT token here...">
+                </div>
+                <div class="config-group">
+                    <button id="saveConfig" class="btn btn-primary">💾 Save
+                        Config</button>
+                </div>
+            </div>
+
+            <!-- Server Status -->
+            <div class="server-info">
+                <div>
+                    <strong>📡 Server Status:</strong> <span
+                        id="serverStatus">Checking...</span>
+                </div>
+                <button id="checkStatus" class="btn btn-primary"
+                    style="padding: 8px 16px; font-size: 12px;">🔄
+                    Check</button>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <div id="apiSections">
+                    <!-- API sections will be dynamically generated here -->
+                </div>
+            </div>
+        </div>
+
+        <script>
+        $(document).ready(function() {
+            let currentToken = localStorage.getItem('authToken') || '';
+            let serverUrl = localStorage.getItem('serverUrl') || 'http://localhost:8000';
+            
+            // Load saved values
+            $('#authToken').val(currentToken);
+            $('#serverUrl').val(serverUrl);
+
+            // Enhanced payload templates for your project
+            const payloadTemplates = {
+                user: {
+                    register: {
+                        "username": "testuser" + Math.floor(Math.random() * 1000),
+                        "email": "test" + Math.floor(Math.random() * 1000) + "@example.com",
+                        "password": "password123",
+                        "fullName": "Test User " + Math.floor(Math.random() * 100)
+                    },
+                    login: {
+                        "email": "test@example.com",
+                        "password": "password123"
+                    },
+                    update: {
+                        "fullName": "Updated User Name",
+                        "email": "updated@example.com"
+                    }
+                },
+                video: {
+                    create: {
+                        "title": "Sample Video Title",
+                        "description": "This is a sample video description for testing purposes.",
+                        "isPublished": true
+                    },
+                    update: {
+                        "title": "Updated Video Title",
+                        "description": "Updated video description",
+                        "isPublished": false
+                    }
+                }
+            };
+
+            // API Configuration tailored to your project
+            const apiEndpoints = [
+                {
+                    section: "👤 User Management",
+                    endpoints: [
+                        { 
+                            name: "Register User", 
+                            method: "POST", 
+                            path: "/api/v1/users/register", 
+                            auth: false, 
+                            template: "user.register",
+                            hasFiles: true,
+                            fileFields: ["avatar", "coverImage"],
+                            description: "Register a new user with avatar and cover image upload"
+                        },
+                        
+                    ]
+                },
+                
+            ];
+
+            // Helper function to get payload from template
+            function getPayloadFromTemplate(templatePath) {
+                if (!templatePath) return null;
+                
+                const parts = templatePath.split('.');
+                let payload = payloadTemplates;
+                
+                for (const part of parts) {
+                    payload = payload[part];
+                    if (!payload) return null;
+                }
+                
+                return JSON.parse(JSON.stringify(payload)); // Deep clone
+            }
+
+            // Convert simplified config to full config
+            function buildApiConfig() {
+                return apiEndpoints.map(section => ({
+                    title: section.section,
+                    endpoints: section.endpoints.map(endpoint => ({
+                        name: endpoint.name,
+                        method: endpoint.method,
+                        url: endpoint.path,
+                        requiresAuth: endpoint.auth,
+                        description: endpoint.description,
+                        payload: getPayloadFromTemplate(endpoint.template),
+                        queryParams: endpoint.query,
+                        urlParams: endpoint.note,
+                        hasFiles: endpoint.hasFiles || false,
+                        fileFields: endpoint.fileFields || []
+                    }))
+                }));
+            }
+
+            const apiConfig = buildApiConfig();
+
+            // Generate API sections with enhanced file upload support
+            function generateApiSections() {
+                const container = $('#apiSections');
+                container.empty();
+
+                apiConfig.forEach((section, sectionIndex) => {
+                    let sectionHtml = `
+                        <div class="expand-collapse">
+                            <h3 class="accordion-header" data-section="${sectionIndex}">
+                                ${section.title}
+                            </h3>
+                            <div class="accordion-body" style="display: none;">
+                                <div class="tab-menu">
+                                    <ul>
+                    `;
+
+                    // Generate tabs
+                    section.endpoints.forEach((endpoint, endpointIndex) => {
+                        const isActive = endpointIndex === 0 ? 'active' : '';
+                        sectionHtml += `
+                            <li>
+                                <a href="#" class="${isActive}" data-tab="tab-${sectionIndex}-${endpointIndex}">
+                                    ${endpoint.name}
+                                </a>
+                            </li>
+                        `;
+                    });
+
+                    sectionHtml += `
+                                    </ul>
+                                </div>
+                                <div class="tab-content">
+                    `;
+
+                    // Generate tab content
+                    section.endpoints.forEach((endpoint, endpointIndex) => {
+                        const isActive = endpointIndex === 0 ? 'active' : '';
+                        const methodClass = `method-${endpoint.method.toLowerCase()}`;
+                        
+                        sectionHtml += `
+                            <div class="tab-box ${isActive}" id="tab-${sectionIndex}-${endpointIndex}">
+                                <div class="endpoint-info">
+                                    <span class="method-badge ${methodClass}">${endpoint.method}</span>
+                                    <strong>${endpoint.url}</strong>
+                                    ${endpoint.queryParams ? `<br><small>Query: ${endpoint.queryParams}</small>` : ''}
+                                    ${endpoint.urlParams ? `<br><small>Note: ${endpoint.urlParams}</small>` : ''}
+                                    <br><em>${endpoint.description}</em>
+                                    ${endpoint.requiresAuth ? '<br><span style="color: #dc3545;">🔒 Requires Authentication</span>' : '<span style="color: #28a745;">🌐 Public Endpoint</span>'}
+                                </div>
+
+                                <div class="quick-actions">
+                                    <button class="btn btn-primary" onclick="randomizePayload(${sectionIndex}, ${endpointIndex})" style="font-size: 11px;">🎲 Random Data</button>
+                                    <button class="btn btn-primary" onclick="resetPayload(${sectionIndex}, ${endpointIndex})" style="font-size: 11px;">🔄 Reset</button>
+                                    ${endpoint.hasFiles ? '<button class="btn btn-primary" onclick="clearFiles(' + sectionIndex + ', ' + endpointIndex + ')" style="font-size: 11px;">🗑️ Clear Files</button>' : ''}
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Request URL:</label>
+                                    <input type="text" class="form-control endpoint-url" value="${endpoint.url}" data-original="${endpoint.url}">
+                                </div>
+                                
+                                ${endpoint.hasFiles ? `
+                                <div class="form-group">
+                                    <label>File Uploads:</label>
+                                    ${endpoint.fileFields.map(field => `
+                                        <div class="file-upload-area" data-field="${field}">
+                                            <input type="file" class="file-input" id="file-${sectionIndex}-${endpointIndex}-${field}" accept="${field === 'avatar' || field === 'thumbnail' ? 'image/*' : field === 'videoFile' ? 'video/*' : '*/*'}">
+                                            <label for="file-${sectionIndex}-${endpointIndex}-${field}" class="file-label">
+                                                📁 Click to select ${field} ${field === 'avatar' ? '(Required)' : '(Optional)'}
+                                            </label>
+                                            <div class="file-preview" id="preview-${sectionIndex}-${endpointIndex}-${field}"></div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                ` : ''}
+
+                                ${endpoint.payload ? `
+                                <div class="form-group">
+                                    <label>Request Body (JSON):</label>
+                                    <textarea class="json-editor request-payload">${JSON.stringify(endpoint.payload, null, 2)}</textarea>
+                                </div>
+                                ` : ''}
+                                
+                                <div style="display: flex; gap: 15px; align-items: center; margin-top: 20px;">
+                                    <button class="btn btn-success send-request" 
+                                            data-method="${endpoint.method}" 
+                                            data-auth="${endpoint.requiresAuth}"
+                                            data-files="${endpoint.hasFiles}"
+                                            data-section="${sectionIndex}"
+                                            data-endpoint="${endpointIndex}">
+                                        🚀 Send Request
+                                    </button>
+                                </div>
+                                
+                                <!-- Response Section for this specific endpoint -->
+                                <div class="response-section" id="response-${sectionIndex}-${endpointIndex}">
+                                    <div class="response-header">
+                                        <div>
+                                            <span class="response-status"></span>
+                                            <span class="response-time"></span>
+                                        </div>
+                                        <button class="clear-response" onclick="clearResponse(${sectionIndex}, ${endpointIndex})">✕ Clear</button>
+                                    </div>
+                                    <div class="response-output"></div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    sectionHtml += `
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    container.append(sectionHtml);
+                });
+
+                // Initialize file upload handlers
+                initializeFileUploads();
+            }
+
+            // Initialize file upload functionality
+            function initializeFileUploads() {
+                $('.file-input').on('change', function() {
+                    const file = this.files[0];
+                    const field = $(this).closest('.file-upload-area').data('field');
+                    const sectionIndex = this.id.split('-')[1];
+                    const endpointIndex = this.id.split('-')[2];
+                    const previewId = `preview-${sectionIndex}-${endpointIndex}-${field}`;
+                    
+                    if (file) {
+                        displayFilePreview(file, previewId, field);
+                    }
+                });
+
+                // Drag and drop functionality
+                $('.file-upload-area').on('dragover', function(e) {
+                    e.preventDefault();
+                    $(this).addClass('dragover');
+                });
+
+                $('.file-upload-area').on('dragleave', function(e) {
+                    e.preventDefault();
+                    $(this).removeClass('dragover');
+                });
+
+                $('.file-upload-area').on('drop', function(e) {
+                    e.preventDefault();
+                    $(this).removeClass('dragover');
+                    
+                    const files = e.originalEvent.dataTransfer.files;
+                    if (files.length > 0) {
+                        const fileInput = $(this).find('.file-input')[0];
+                        fileInput.files = files;
+                        $(fileInput).trigger('change');
+                    }
+                });
+            }
+
+            // Display file preview
+            function displayFilePreview(file, previewId, field) {
+                const preview = $(`#${previewId}`);
+                preview.empty();
+
+                const fileItem = $(`
+                    <div class="file-item">
+                        ${file.type.startsWith('image/') ? `<img src="${URL.createObjectURL(file)}" alt="Preview">` : '📄'}
+                        <div>
+                            <div><strong>${file.name}</strong></div>
+                            <div>${(file.size / 1024).toFixed(1)} KB</div>
+                        </div>
+                        <button class="file-remove" onclick="removeFile('${previewId}', '${field}')">×</button>
+                    </div>
+                `);
+
+                preview.append(fileItem);
+            }
+
+            // Initialize
+            generateApiSections();
+            checkServerStatus();
+
+            // Event handlers
+          $('#saveConfig').click(function () {
+    const currentToken = $('#authToken').val().trim();
+    const serverUrl = $('#serverUrl').val().trim();
+
+    if (!currentToken) {
+        showNotification('⚠️ Please fill in  Auth Token', 'error');
+        return;
+    }
+
+    localStorage.setItem('authToken', currentToken);
+    localStorage.setItem('serverUrl', serverUrl);
+
+    showNotification('✅ Configuration saved successfully!', 'success');
+    checkServerStatus();
+});
+
+            $('#checkStatus').click(function() {
+                checkServerStatus();
+            });
+
+            // Accordion functionality
+            $(document).on('click', '.accordion-header', function() {
+                const $this = $(this);
+                const $body = $this.next('.accordion-body');
+                const isActive = $this.hasClass('active');
+
+                // Close all other accordions
+                $('.accordion-header').removeClass('active');
+                $('.accordion-body').slideUp();
+
+                if (!isActive) {
+                    $this.addClass('active');
+                    $body.slideDown();
+                }
+            });
+
+            // Tab functionality
+            $(document).on('click', '.tab-menu a', function(e) {
+                e.preventDefault();
+                const $this = $(this);
+                const tabId = $this.data('tab');
+                
+                // Update active tab
+                $this.closest('.tab-menu').find('a').removeClass('active');
+                $this.addClass('active');
+                
+                // Show corresponding content
+                $this.closest('.accordion-body').find('.tab-box').removeClass('active');
+                $(`#${tabId}`).addClass('active');
+            });
+
+            // Enhanced send request functionality with file upload support
+            $(document).on('click', '.send-request', function() {
+                const $btn = $(this);
+                const $tabBox = $btn.closest('.tab-box');
+                const method = $btn.data('method');
+                const requiresAuth = $btn.data('auth');
+                const hasFiles = $btn.data('files');
+                const sectionIndex = $btn.data('section');
+                const endpointIndex = $btn.data('endpoint');
+                const url = $tabBox.find('.endpoint-url').val();
+                const payloadText = $tabBox.find('.request-payload').val();
+
+                // Get response section for this specific endpoint
+                const $responseSection = $(`#response-${sectionIndex}-${endpointIndex}`);
+
+                // Validate inputs
+                if (!serverUrl) {
+                    updateResponseOutput($responseSection, '❌ Please set server URL first!', 'error', 0);
+                    return;
+                }
+
+                if (requiresAuth && !currentToken) {
+                    updateResponseOutput($responseSection, '❌ This endpoint requires authentication. Please set JWT token first!', 'error', 0);
+                    return;
+                }
+
+                // Show loading state
+                $btn.addClass('loading').text('⏳ Sending...');
+                updateResponseOutput($responseSection, '⏳ Sending request...', 'info', 0);
+
+                const startTime = Date.now();
+
+                // Make request with file support
+                makeApiRequestWithFiles(method, serverUrl + url, payloadText, requiresAuth, hasFiles, sectionIndex, endpointIndex)
+                    .then(response => {
+                        const endTime = Date.now();
+                        const responseTime = endTime - startTime;
+                        
+                        $btn.removeClass('loading').text('🚀 Send Request');
+                        updateResponseOutput($responseSection, JSON.stringify(response, null, 2), 'success', responseTime);
+                        
+                        // Auto-extract token from login response
+                        if (sectionIndex === 0 && endpointIndex === 1) { // Login endpoint
+                            try {
+                                if (response.data && (response.data.accessToken || response.data.token)) {
+                                    const token = response.data.accessToken || response.data.token;
+                                    $('#authToken').val(token);
+                                    currentToken = token;
+                                    localStorage.setItem('authToken', currentToken);
+                                    showNotification('🔑 JWT Token automatically saved!', 'success');
+                                }
+                            } catch (e) {
+                                // Ignore parsing errors
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        const endTime = Date.now();
+                        const responseTime = endTime - startTime;
+                        
+                        $btn.removeClass('loading').text('🚀 Send Request');
+                        updateResponseOutput($responseSection, JSON.stringify(error, null, 2), 'error', responseTime);
+                    });
+            });
+
+            // Enhanced API request function with file upload support
+            function makeApiRequestWithFiles(method, url, payloadText, requiresAuth, hasFiles, sectionIndex, endpointIndex) {
+                const headers = {};
+
+                if (requiresAuth && currentToken) {
+                    headers['Authorization'] = `Bearer ${currentToken}`;
+                }
+
+                const options = {
+                    method: method,
+                    headers: headers
+                };
+
+                if (hasFiles && (method === 'POST' || method === 'PUT')) {
+                    // Use FormData for file uploads
+                    const formData = new FormData();
+                    
+                    // Add JSON data if present
+                    if (payloadText) {
+                        try {
+                            const jsonData = JSON.parse(payloadText);
+                            Object.keys(jsonData).forEach(key => {
+                                formData.append(key, jsonData[key]);
+                            });
+                        } catch (e) {
+                            console.warn('Invalid JSON in payload, skipping JSON data');
+                        }
+                    }
+                    
+                    // Add files
+                    const endpoint = apiConfig[sectionIndex].endpoints[endpointIndex];
+                    endpoint.fileFields.forEach(field => {
+                        const fileInput = document.getElementById(`file-${sectionIndex}-${endpointIndex}-${field}`);
+                        if (fileInput && fileInput.files[0]) {
+                            formData.append(field, fileInput.files[0]);
+                        }
+                    });
+                    
+                    options.body = formData;
+                    // Don't set Content-Type header for FormData, let browser set it with boundary
+                } else if (payloadText && (method === 'POST' || method === 'PUT')) {
+                    // Regular JSON request
+                    headers['Content-Type'] = 'application/json';
+                    options.body = payloadText;
+                }
+
+                return fetch(url, options)
+                    .then(async response => {
+                        let data;
+                        const contentType = response.headers.get('content-type');
+                        
+                        if (contentType && contentType.includes('application/json')) {
+                            data = await response.json();
+                        } else {
+                            data = await response.text();
+                        }
+                        
+                        return {
+                            status: response.status,
+                            statusText: response.statusText,
+                            data: data
+                        };
+                    })
+                    .catch(error => {
+                        throw {
+                            error: 'Network Error',
+                            message: error.message,
+                            type: 'FETCH_ERROR'
+                        };
+                    });
+            }
+
+            // Update response output for specific endpoint
+            function updateResponseOutput($responseSection, content, type, responseTime) {
+                const $status = $responseSection.find('.response-status');
+                const $time = $responseSection.find('.response-time');
+                const $output = $responseSection.find('.response-output');
+                
+                $output.text(content);
+                $responseSection.addClass('show');
+                
+                if (type === 'success') {
+                    $status.html('<span class="status-success">✅ Success</span>');
+                } else if (type === 'error') {
+                    $status.html('<span class="status-error">❌ Error</span>');
+                } else {
+                    $status.html('<span class="status-info">ℹ️ Info</span>');
+                }
+                
+                if (responseTime > 0) {
+                    $time.text(`⏱️ ${responseTime}ms`);
+                } else {
+                    $time.text('');
+                }
+            }
+
+            // Check server status
+            function checkServerStatus() {
+                if (!serverUrl) {
+                    $('#serverStatus').html('<span style="color: #dc3545;">❌ No server URL set</span>');
+                    return;
+                }
+
+                $('#serverStatus').html('<span style="color: #28a745;">✅ Server is running</span>');
+
+                
+            }
+
+            // Show notification
+            function showNotification(message, type) {
+                const notification = $(`
+                    <div class="notification ${type}">
+                        ${message}
+                    </div>
+                `);
+                
+                $('body').append(notification);
+                
+                setTimeout(() => {
+                    notification.addClass('show');
+                }, 100);
+                
+                setTimeout(() => {
+                    notification.removeClass('show');
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, 8000);
+            }
+
+            // Random data generator
+            function generateRandomData(type) {
+                const generators = {
+                    name: () => ['John Doe', 'Jane Smith', 'Mike Johnson', 'Sarah Wilson', 'Alex Brown', 'Emma Davis'][Math.floor(Math.random() * 6)],
+                    email: () => `user${Math.floor(Math.random() * 1000)}@example.com`,
+                    password: () => 'Password' + Math.floor(Math.random() * 1000),
+                    username: () => 'user' + Math.floor(Math.random() * 10000),
+                    fullName: () => generateRandomData('name'),
+                    title: () => ['Amazing Video', 'Tutorial Series', 'Product Demo', 'Live Stream', 'Documentary'][Math.floor(Math.random() * 5)],
+                    description: () => ['This is an amazing video content.', 'Educational tutorial for beginners.', 'Professional product demonstration.', 'Live streaming session.', 'Documentary about technology.'][Math.floor(Math.random() * 5)]
+                };
+                
+                return generators[type] ? generators[type]() : 'sample-value';
+            }
+
+            // Global functions for button actions
+            window.randomizePayload = function(sectionIndex, endpointIndex) {
+                const endpoint = apiConfig[sectionIndex].endpoints[endpointIndex];
+                if (!endpoint.payload) return;
+                
+                const payload = { ...endpoint.payload };
+                
+                Object.keys(payload).forEach(key => {
+                    if (generateRandomData(key) !== 'sample-value') {
+                        payload[key] = generateRandomData(key);
+                    }
+                });
+                
+                $(`#tab-${sectionIndex}-${endpointIndex} .request-payload`).val(JSON.stringify(payload, null, 2));
+                showNotification('🎲 Payload randomized!', 'success');
+            };
+
+            window.resetPayload = function(sectionIndex, endpointIndex) {
+                const endpoint = apiConfig[sectionIndex].endpoints[endpointIndex];
+                if (!endpoint.payload) return;
+                
+                $(`#tab-${sectionIndex}-${endpointIndex} .request-payload`).val(JSON.stringify(endpoint.payload, null, 2));
+                showNotification('🔄 Payload reset to template!', 'success');
+            };
+
+            window.clearFiles = function(sectionIndex, endpointIndex) {
+                const endpoint = apiConfig[sectionIndex].endpoints[endpointIndex];
+                if (!endpoint.hasFiles) return;
+                
+                endpoint.fileFields.forEach(field => {
+                    const fileInput = document.getElementById(`file-${sectionIndex}-${endpointIndex}-${field}`);
+                    if (fileInput) {
+                        fileInput.value = '';
+                        $(`#preview-${sectionIndex}-${endpointIndex}-${field}`).empty();
+                    }
+                });
+                
+                showNotification('🗑️ All files cleared!', 'success');
+            };
+
+            window.removeFile = function(previewId, field) {
+                const preview = $(`#${previewId}`);
+                const parts = previewId.split('-');
+                const sectionIndex = parts[1];
+                const endpointIndex = parts[2];
+                const fileInput = document.getElementById(`file-${sectionIndex}-${endpointIndex}-${field}`);
+                
+                if (fileInput) {
+                    fileInput.value = '';
+                }
+                
+                preview.empty();
+                showNotification(`🗑️ ${field} file removed!`, 'info');
+            };
+
+            window.clearResponse = function(sectionIndex, endpointIndex) {
+                const $responseSection = $(`#response-${sectionIndex}-${endpointIndex}`);
+                $responseSection.removeClass('show');
+                $responseSection.find('.response-output').text('');
+                $responseSection.find('.response-status').text('');
+                $responseSection.find('.response-time').text('');
+            };
+        });
+    </script>
+    </body>
+</html>
