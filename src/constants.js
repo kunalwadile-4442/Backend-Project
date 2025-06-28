@@ -1,5 +1,6 @@
 
 export const MESSAGES = {
+  WATCH_HISTORY_FETCHED_SUCCESSFULLY: "Watch history fetched successfully",
   CHANNEL_PROFILE_FETCHED_SUCCESSFULLY: "Channel profile fetched successfully",
   CHANNEL_DOES_NOT_EXIST: "Channel does not exist",
   USERNAME_NOT_GETTED: "Username not provided",
