@@ -1,5 +1,9 @@
 
 export const MESSAGES = {
+  REFRESH_TOKEN_SUCCESSFUL: "Refresh token genrated successful",
+  REFRESH_TOKEN_EXPIRED: "Refresh token has expired",
+  INVALID_REFRESH_TOKEN: "Invalid refresh token",
+  REQUEST_BODY_REQUIRED: "Request body is required",
   LOGOUT_SUCCESSFUL: "User logout successful",
   INVALID_ACCESS_TOKEN: "Invalid access token",
   UNAUTHORIZED_ACCESS: "Unauthorized access",

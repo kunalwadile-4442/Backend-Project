@@ -4,27 +4,26 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import ApiResponse from "../utils/apiResponse.js";
 import { MESSAGES } from "../constants.js";
+import jwt from "jsonwebtoken";
 
-// token genration
-const genrateAccessAndRefreshToken = async (userId) => {
+// token generation
+const generateAccessAndRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
-    const accesToken = user.generateAccessToken();
+    const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 
     // save into database user refresh token
     user.refreshToken = refreshToken;
-    await user.save({ validateBEforeSave: false });
+    await user.save({ validateBeforeSave: false });
 
-    return { accesToken, refreshToken };
+    return { accessToken, refreshToken };
   } catch (err) {
     throw new ApiError(500, MESSAGES.TOKEN_GENRATION_FAILED);
   }
 };
 
-export default {
-  genrateAccessAndRefreshToken,
-};
+export { generateAccessAndRefreshToken };
 
 // User it meane Mongooes Document
 // user meand db instance of user model our user created entery
@@ -126,6 +125,15 @@ const loginUser = asyncHandler(async (req, res) => {
   // return res
 
   const { email, username, password } = req.body;
+  if (!req.body) {
+  throw new ApiError(400, MESSAGES.REQUEST_BODY_REQUIRED);
+}
+
+console.log("Req body",req.body);
+
+  console.log("email",email)
+  console.log("username", username);
+  console.log("Password", password);
   // check for username
   if (!username && !email) {
     throw new ApiError(400, MESSAGES.USERNAME_PASSWORD_REQUIRED);
@@ -145,7 +153,7 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, MESSAGES.INVALID_USER_CREDENTIALS);
   }
 
-  const { accesToken, refreshToken } = await genrateAccessAndRefreshToken(
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     user._id
   );
 
@@ -159,7 +167,7 @@ const options = {
 }
 
   return res.status(200)
-        .cookie("accesToken", accesToken, options)
+        .cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options)
         .json(
           new ApiResponse(200,{
@@ -194,4 +202,52 @@ const options = {
     .json(new ApiResponse(200, null, MESSAGES.LOGOUT_SUCCESSFUL));
 });
 
-export { registerUser, loginUser, logoutUser };
+const refreshAccessToken = asyncHandler(async (req, res) => {
+  
+ const incommingRefreshToken =
+   req.cookies.refreshToken || req.body.refreshToken;
+
+   if(incommingRefreshToken){
+    throw new ApiError(401, MESSAGES.INVALID_REFRESH_TOKEN);
+   }
+
+  try {
+    const decodedVerifyRefreshToken = await jwt.verify(
+      incommingRefreshToken,
+      process.env.REFRESH_TOKEN
+    );
+  
+    if (!decodedVerifyRefreshToken) {
+      throw new ApiError(401, MESSAGES.INVALID_REFRESH_TOKEN);
+    }
+    const user = await User.findById(decodedVerifyRefreshToken?._id)
+  
+    if(!user){
+      throw new ApiError(401, MESSAGES.INVALID_REFRESH_TOKEN);
+    }
+      if(incommingRefreshToken !== user?.refreshToken){
+      throw new ApiError(401, MESSAGES.REFRESH_TOKEN_EXPIRED);
+    }
+      const options = {
+      httpOnly: true,
+      secure: true,
+    };
+  
+   const {accessToken, newRefreshToken} =   await generateAccessAndRefreshToken(user._id)
+  
+     return res.status(200).cookies("accessToken", accessToken, options)
+     .cookies("refreshToken", newRefreshToken, options).json(
+      new ApiResponse(
+        200,
+        {accessToken, refreshToken: newRefreshToken },
+        MESSAGES.REFRESH_TOKEN_SUCCESSFUL
+      )
+    );
+  } catch (error) {
+    throw new ApiError(401, MESSAGES.INVALID_REFRESH_TOKEN);
+    
+  }
+});
+
+
+export { registerUser, loginUser, logoutUser, refreshAccessToken };
