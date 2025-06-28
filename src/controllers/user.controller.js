@@ -215,7 +215,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 
   try {
-    const decodedVerifyRefreshToken =  jwt.verify(
+    const decodedVerifyRefreshToken = jwt.verify(
       incommingRefreshToken,
       process.env.REFRESH_TOKEN
     );
@@ -284,7 +284,7 @@ const changeCurrentUserPassword = asyncHandler(async (req, res) => {
 
   res
     .status(200)
-    .json(new ApiResponse(200, {},MESSAGES.PASSWORD_CHANGED_SUCCESSFULLY));
+    .json(new ApiResponse(200, {}, MESSAGES.PASSWORD_CHANGED_SUCCESSFULLY));
 });
 
 // Get current user.  (if login )
@@ -378,6 +378,84 @@ const updateCoverImage = asyncHandler(async (req, res) => {
     );
 });
 
+const getUserChannelProfile = asyncHandler(async (req, res) => {
+  const { username } = req.params;
+
+  if (!username) {
+    throw new ApiError(400, MESSAGES.USERNAME_NOT_GETTED);
+  }
+  // User.find({ username}
+  const channel = await User.aggregate([
+    // all documents
+    {
+      $match: {
+        username: username.toLowerCase(),
+      },
+    },
+    // nexr srage i have only 1 document
+    // get the subscriber count
+    {
+      $lookup: {
+        from: "Subscription",
+        localField: "_id",
+        foreignField: "channel",
+        as: "subscribers",
+      },
+    },
+    // get the subscribers to this channel
+    {
+      $lookup: {
+        from: "Subscription",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "subscribersTo",
+      },
+    },
+    // whole document find a channels and subscribers count
+    {
+      // $size is used to get the size of the array
+      $addFields: {
+        subscribersCount: { $size: "$subscribers" },
+        channelSubscribersToCount: { $size: "$subscribersTo" },
+        isSubscribed: {
+          $cond: {
+            if: { $in: [req.users?._id, "$subscribers.subscriber"] },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        fullName: 1,
+        username: 1,
+        avatar: 1,
+        coverImage: 1,
+        subscribersCount: 1,
+        channelSubscribersToCount: 1,
+        isSubscribed: 1,
+        email: 1,
+      },
+    },
+  ]);
+
+  if (!channel || channel.length === 0) {
+    throw new ApiError(404, MESSAGES.CHANNEL_DOES_NOT_EXIST);
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        channel[0],
+        MESSAGES.CHANNEL_PROFILE_FETCHED_SUCCESSFULLY
+      )
+    );
+});
+
+
 export {
   registerUser,
   loginUser,
@@ -388,4 +466,5 @@ export {
   changecurrentUser,
   updateAvatar,
   updateCoverImage,
+  getUserChannelProfile,
 };

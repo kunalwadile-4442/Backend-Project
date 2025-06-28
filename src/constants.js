@@ -1,5 +1,8 @@
 
 export const MESSAGES = {
+  CHANNEL_PROFILE_FETCHED_SUCCESSFULLY: "Channel profile fetched successfully",
+  CHANNEL_DOES_NOT_EXIST: "Channel does not exist",
+  USERNAME_NOT_GETTED: "Username not provided",
   COVER_IMAGE_UPLOAD_FAILED: "Failed to upload cover image",
   COVER_IMAGE_UPDATED_SUCCESSFULLY: "Cover image updated successfully",
   COVER_IMAGE_REQUIRED: "Cover image is required",
