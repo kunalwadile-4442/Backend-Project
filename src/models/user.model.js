@@ -61,6 +61,7 @@ userSchame.pre("save", async function (next) {
   next();
 });
 
+
 userSchame.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };

@@ -5,6 +5,29 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import ApiResponse from "../utils/apiResponse.js";
 import { MESSAGES } from "../constants.js";
 
+// token genration
+const genrateAccessAndRefreshToken = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    const accesToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+
+    // save into database user refresh token
+    user.refreshToken = refreshToken;
+    await user.save({ validateBEforeSave: false });
+
+    return { accesToken, refreshToken };
+  } catch (err) {
+    throw new ApiError(500, MESSAGES.TOKEN_GENRATION_FAILED);
+  }
+};
+
+export default {
+  genrateAccessAndRefreshToken,
+};
+
+// User it meane Mongooes Document
+// user meand db instance of user model our user created entery
 const registerUser = asyncHandler(async (req, res) => {
   // get user details from frontend
   // validation - not empty
@@ -90,4 +113,85 @@ const registerUser = asyncHandler(async (req, res) => {
     );
 });
 
-export { registerUser };
+const loginUser = asyncHandler(async (req, res) => {
+  // get req.body => data
+  // access username or email and password
+  // check the user exist or not
+  // if username or email match show error
+  // if not then login
+  // genrate acces and fresh token
+  // store the refresh token if user succesfull login
+  // genrate acces tokken and store in browser local storage
+  // saved as cookies
+  // return res
+
+  const { email, username, password } = req.body;
+  // check for username
+  if (!username && !email) {
+    throw new ApiError(400, MESSAGES.USERNAME_PASSWORD_REQUIRED);
+  }
+
+  const user = await User.findOne({
+    $or: [{ email: email.toLowerCase() }, { username: username.toLowerCase() }],
+  });
+
+  if (!user) {
+    throw new ApiError(400, MESSAGES.USER_NOT_FOUND);
+  }
+
+  const isPasswordCorrect = await user.isPasswordCorrect(password);
+
+  if (!isPasswordCorrect) {
+    throw new ApiError(400, MESSAGES.INVALID_USER_CREDENTIALS);
+  }
+
+  const { accesToken, refreshToken } = await genrateAccessAndRefreshToken(
+    user._id
+  );
+
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
+
+const options = {
+  httpOnly: true,
+  secure: true
+}
+
+  return res.status(200)
+        .cookie("accesToken", accesToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(
+          new ApiResponse(200,{
+            user: loggedInUser, accessToken, refreshToken,
+            message: MESSAGES.LOGIN_SUCCESSFUL,
+          })
+        )
+ });   
+
+ const logoutUser = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: {
+        refreshToken: undefined,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, null, MESSAGES.LOGOUT_SUCCESSFUL));
+});
+
+export { registerUser, loginUser, logoutUser };
