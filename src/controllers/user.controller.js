@@ -106,9 +106,20 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(500, MESSAGES.USER_REGISTRATION_FAILED);
   }
 
+    const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    user._id
+  ); await generateAccessAndRefreshToken(user._id);
+
   //
   return res
     .status(201)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
     .json(
       new ApiResponse(200, createdUser, MESSAGES.USER_REGISTERED_SUCCESSFULLY)
     );
@@ -155,9 +166,9 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, MESSAGES.INVALID_USER_CREDENTIALS);
   }
 
-  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
-    user._id
-  );
+  // const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+  //   user._id
+  // );
 
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
@@ -170,8 +181,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
+    // .cookie("accessToken", accessToken, options)
+    // .cookie("refreshToken", refreshToken, options)
     .json(
       new ApiResponse(200, {
         user: loggedInUser,

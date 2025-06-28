@@ -21,6 +21,11 @@ app.use(express.json({ limit: process.env.LIMIT_JSON }));
 app.use(express.urlencoded({ extended: true, limit: process.env.LIMIT_JSON }));
 
 // Static files (before routes)
+
+app.get("/", (_, res) => {
+  res.json({ message: "API working 🎉" });
+});
+
 app.use(express.static("public"));
 
 // Serve API tester page
