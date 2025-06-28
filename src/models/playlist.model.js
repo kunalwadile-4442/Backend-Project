@@ -17,7 +17,7 @@ const playlistSchema = new Schema({
         ref: "User",
         required: true
     },
-    video:{
+    videos:{
         type: Schema.Types.ObjectId,
         ref: "Videos",
         required: true
