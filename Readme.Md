@@ -1,4 +1,3 @@
 Node Project
 
-
-Video no 13 start 
+Aggrigetion pipeline only
