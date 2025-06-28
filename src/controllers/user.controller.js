@@ -123,7 +123,7 @@ const loginUser = asyncHandler(async (req, res) => {
   // genrate acces and fresh token
   // store the refresh token if user succesfull login
   // genrate acces tokken and store in browser local storage
-  // saved as cookies
+  // saved as cookie
   // return res
 
   const { email, username, password } = req.body;
@@ -209,7 +209,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const incommingRefreshToken =
-    req.cookies.refreshToken || req.body.refreshToken;
+    req.cookie.refreshToken || req.body.refreshToken;
 
   if (!incommingRefreshToken) {
     throw new ApiError(401, MESSAGES.INVALID_REFRESH_TOKEN);
@@ -218,7 +218,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   try {
     const decodedVerifyRefreshToken = jwt.verify(
       incommingRefreshToken,
-      process.env.REFRESH_TOKEN
+      process.env.REFRESH_TOKEN_SECRET
     );
 
     if (!decodedVerifyRefreshToken) {
@@ -242,8 +242,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     return res
       .status(200)
-      .cookies("accessToken", accessToken, options)
-      .cookies("refreshToken", newRefreshToken, options)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", newRefreshToken, options)
       .json(
         new ApiResponse(
           200,

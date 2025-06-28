@@ -88,7 +88,7 @@ userSchame.methods.generateRefreshToken = function () {
         fullName: this.fullName,
         username: this.username,
       },
-      process.env.REFRESH_TOKEN,
+      process.env.REFRESH_TOKEN_SECRET,
       {
         expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
       },

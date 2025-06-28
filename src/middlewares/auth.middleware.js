@@ -11,7 +11,7 @@ import jwt from "jsonwebtoken";
 
   try {
     const token =
-      req.cookies?.accessToken ||
+      req.cookie?.accessToken ||
       req.header("Authorization")?.replace("Bearer ", "");
 
     if (!token) {
