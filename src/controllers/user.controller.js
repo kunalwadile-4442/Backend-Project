@@ -186,8 +186,8 @@ const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set: {
-        refreshToken: undefined,
+      $unset: {
+        refreshToken: 1,
       },
     },
     {
@@ -293,7 +293,7 @@ const changeCurrentUserPassword = asyncHandler(async (req, res) => {
 const getCurrentUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
-    .json(200, req.user, MESSAGES.CURRENT_USER_FETCHED_SUCCESSFULLY);
+    .json(new ApiResponse(200, req.user, MESSAGES.CURRENT_USER_FETCHED_SUCCESSFULLY));
 });
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
@@ -316,7 +316,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, MESSAGES.CURRENT_USER_UPDATED_SUCCESSFULLY));
+    .json(new ApiResponse(200, user, MESSAGES.CURRENT_USER_UPDATED_SUCCESSFULLY));
 });
 
 const updateAvatar = asyncHandler(async (req, res) => {
@@ -420,7 +420,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         channelSubscribersToCount: { $size: "$subscribersTo" },
         isSubscribed: {
           $cond: {
-            if: { $in: [req.users?._id, "$subscribers.subscriber"] },
+            if: { $in: [req.user?._id, "$subscribers.subscriber"] },
             then: true,
             else: false,
           },
