@@ -1,5 +1,15 @@
 
 export const MESSAGES = {
+  COVER_IMAGE_UPLOAD_FAILED: "Failed to upload cover image",
+  COVER_IMAGE_UPDATED_SUCCESSFULLY: "Cover image updated successfully",
+  COVER_IMAGE_REQUIRED: "Cover image is required",
+  CURRENT_USER_AVATAR_UPDATED_SUCCESSFULLY: "User avatar updated successfully",
+  CURRENT_USER_UPDATED_SUCCESSFULLY: "User updated successfully",
+  CURRENT_USER_FETCHED_SUCCESSFULLY: "User fetched successfully",
+  PASSWORDS_DO_NOT_MATCH: "New password and confirm password do not match",
+  PASSWORD_CHANGED_SUCCESSFULLY: "Password changed successfully",
+  INVALID_CURRENT_PASSWORD: "Invalid current password",
+  OLD_NEW_PASSWORD_REQUIRED: "Current and new password are required",
   REFRESH_TOKEN_SUCCESSFUL: "Refresh token genrated successful",
   REFRESH_TOKEN_EXPIRED: "Refresh token has expired",
   INVALID_REFRESH_TOKEN: "Invalid refresh token",
