@@ -296,7 +296,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     .json(200, req.user, MESSAGES.CURRENT_USER_FETCHED_SUCCESSFULLY);
 });
 
-const changecurrentUser = asyncHandler(async (req, res) => {
+const updateAccountDetails = asyncHandler(async (req, res) => {
   const { fullName, email } = req.body;
 
   if (!fullName || !email) {
@@ -517,7 +517,7 @@ export {
   refreshAccessToken,
   changeCurrentUserPassword,
   getCurrentUser,
-  changecurrentUser,
+  updateAccountDetails,
   updateAvatar,
   updateCoverImage,
   getUserChannelProfile,
