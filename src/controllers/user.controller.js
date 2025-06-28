@@ -237,17 +237,17 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       secure: true,
     };
 
-    const { accessToken, newRefreshToken } =
+    const { accessToken, refreshToken } =
       await generateAccessAndRefreshToken(user._id);
 
     return res
       .status(200)
       .cookie("accessToken", accessToken, options)
-      .cookie("refreshToken", newRefreshToken, options)
+      .cookie("refreshToken", refreshToken, options)
       .json(
         new ApiResponse(
           200,
-          { accessToken, refreshToken: newRefreshToken },
+          { accessToken, refreshToken: refreshToken },
           MESSAGES.REFRESH_TOKEN_SUCCESSFUL
         )
       );
@@ -465,7 +465,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
     },
     {
       $lookup: {
-        form: "Videos",
+        from: "Videos",
         localField: "watchHistory",
         foreignField: "_id",
         as: "watchHistory",
