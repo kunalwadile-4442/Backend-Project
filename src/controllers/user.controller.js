@@ -215,7 +215,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 
   try {
-    const decodedVerifyRefreshToken = await jwt.verify(
+    const decodedVerifyRefreshToken =  jwt.verify(
       incommingRefreshToken,
       process.env.REFRESH_TOKEN
     );
@@ -284,7 +284,7 @@ const changeCurrentUserPassword = asyncHandler(async (req, res) => {
 
   res
     .status(200)
-    .json(new ApiResponse(200, MESSAGES.PASSWORD_CHANGED_SUCCESSFULLY));
+    .json(new ApiResponse(200, {},MESSAGES.PASSWORD_CHANGED_SUCCESSFULLY));
 });
 
 // Get current user.  (if login )
@@ -342,7 +342,11 @@ const updateAvatar = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(200,user,MESSAGES.CURRENT_USER_AVATAR_UPDATED_SUCCESSFULLY)
+      new ApiResponse(
+        200,
+        user,
+        MESSAGES.CURRENT_USER_AVATAR_UPDATED_SUCCESSFULLY
+      )
     );
 });
 
@@ -357,7 +361,7 @@ const updateCoverImage = asyncHandler(async (req, res) => {
     throw new ApiError(400, MESSAGES.COVER_IMAGE_UPLOAD_FAILED);
   }
 
- const user = await User.findByIdAndUpdate(
+  const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: {
@@ -369,7 +373,9 @@ const updateCoverImage = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, user,MESSAGES.COVER_IMAGE_UPDATED_SUCCESSFULLY));
+    .json(
+      new ApiResponse(200, user, MESSAGES.COVER_IMAGE_UPDATED_SUCCESSFULLY)
+    );
 });
 
 export {
@@ -381,5 +387,5 @@ export {
   getCurrentUser,
   changecurrentUser,
   updateAvatar,
-  updateCoverImage
+  updateCoverImage,
 };
